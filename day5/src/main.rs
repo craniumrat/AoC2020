@@ -28,7 +28,7 @@ fn main() {
     println!("Max value (part 1): {}", numbers.iter().max().unwrap());
 
     for i in 8..1016 {
-        if !numbers.contains(&i) {
+        if !numbers.contains(&i) && numbers.contains(&(&i - 1)) && numbers.contains(&(&i + 1)) {
             println!("Boarding pass (Part 2): {}", i);
         }
     }
