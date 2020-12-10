@@ -1,0 +1,4 @@
+number = @{ ("+" | "-") ~ ASCII_DIGIT+ }
+instruction = @{ ("acc" | "nop" | "jmp") } 
+expr = { instruction ~ number }
+WHITESPACE = _{" "}
