@@ -2,8 +2,9 @@ WHITESPACE = _{ " " }
 
 number = @{ ASCII_DIGIT+ }
 adjective = @{ ASCII_ALPHA+ }
-color = @{ ASCII_ALPHA+ }
-inner_bag = { number ~ adjective ~ color ~ "bag" ~ "s"* }
-outer_bag = { adjective ~ color ~ "bags" }
+desc = { adjective ~ adjective}
+inner_bag = { number ~ desc ~ "bag" ~ "s"* }
+outer_bag = { desc ~ "bags" }
 inner_bags = { inner_bag ~ ("," ~ inner_bag)* }
-container = { outer_bag ~ "contain" ~ inner_bags }
+no_other_bags = { "no other bags" }
+container = { outer_bag ~ "contain" ~ (inner_bags | no_other_bags) }
