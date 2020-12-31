@@ -12,10 +12,16 @@ use std::hash::{Hash, Hasher};
 #[grammar = "bag.pest"]
 pub struct BagParser;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Eq)]
 pub struct Bag {
     name: String,
     inner: HashMap<String, i32>
+}
+
+impl PartialEq for Bag {
+    fn eq(&self, other: &Self) -> bool {
+        return self.name == other.name;
+    }
 }
 
 impl Hash for Bag {
@@ -68,6 +74,12 @@ impl Bag {
     }
 }
 
+fn get_an_entry(map: &HashMap<&str, i64>) -> (String, i64) {
+    let (key, value) = map.iter().next().unwrap();
+
+    (String::from(*key), *value)
+}
+
 fn main() -> Result<(), std::io::Error> {
     let file = File::open("input.txt")?;
     let reader = io::BufReader::new(file);
@@ -79,32 +91,59 @@ fn main() -> Result<(), std::io::Error> {
 
     // println!("{}", bags.len());
 
+    //PART 1: Putting it in its own scope
     //We start with a hashmap of <name of bag, visited?>.
     //For each entry, if our bag is an "inner" of another bag,
     //
     //loop till hashmap is all visited = true.
+    {
+        let mut next = vec!["shiny gold"];
+        let mut visited: HashSet<&str> = HashSet::new();
 
-    let mut next = vec!["shiny gold"];
-    let mut visited: HashSet<&str> = HashSet::new();
+        while next.len() != 0 {
+            let to_test = next.pop().unwrap();
 
-    while next.len() != 0 {
-        let to_test = next.pop().unwrap();
+            println!("Testing: {}", to_test);
 
-        println!("Testing: {}", to_test);
+            visited.insert(to_test);
 
-        visited.insert(to_test);
-
-        for bag in bags.iter() {
-            if bag.inner.contains_key(to_test) && !visited.contains(bag.name.as_str()) {
-                println!("Adding to next: {}", bag.name);
-                next.push(&bag.name);
+            for bag in bags.iter() {
+                if bag.inner.contains_key(to_test) && !visited.contains(bag.name.as_str()) {
+                    println!("Adding to next: {}", bag.name);
+                    next.push(&bag.name);
+                }
             }
         }
+        println!("Part 1: {}", visited.len() - 1); //We have to subtract 1 for "shiny gold" itself
     }
 
-    println!("Part 1: {}", visited.len() - 1); //We have to subtract 1 for "shiny gold" itself
+    //PART 2:
+    {
+        let mut total: i64 = 0;
+        let mut inners: HashMap<&str, i64> = HashMap::new();
 
-    
+        inners.insert("shiny gold", 1);
+
+        loop {
+            if inners.len() == 0 {
+                break;
+            }
+
+            let (next_key, next_count) = get_an_entry(&inners);
+            inners.remove(next_key.as_str());
+            let bag = bags.get(&Bag {name: next_key, inner: HashMap::new() }).unwrap();
+            total += next_count;    //Add the outer bag counts to the total
+            for (inner_bag, inner_count) in bag.inner.iter() {
+                *inners.entry(inner_bag.as_str()).or_insert(0) += (*inner_count as i64) * next_count;
+            }
+
+            println!("Part 2: {}", total - 1); //We have to remove the "shiny bag" again
+        }
+
+
+    }
+
+
 
     Ok(())
 }
