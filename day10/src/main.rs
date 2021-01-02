@@ -31,7 +31,31 @@ fn main() -> Result<(), std::io::Error> {
 
     three_jump += 1;
 
-    //Add one 
     println!("One jump: {}, three jump: {}. Part 1: {}", one_jump, three_jump, one_jump * three_jump);
+
+    //Got the solution from tsoding on YouTube. Trying to implement this
+    //without plagarizing.
+    let mut dp : Vec<i64> = vec![];
+    dp.push(1);
+
+
+    //For each element, count the ways to get to the element from the prev. elements
+    //conditional so that each prev. element should be <= 3 less than current element.
+    for i in 1..input.len() {
+        dp.push(0);
+        for j in (0..i).rev() { //For each element (i-1), (i - 2).... 
+            //Since this is sorted, input[j] is  guaranteed to be < input[i]
+            if input[i] - input[j] > 3 {
+                break;
+            }
+
+            dp[i] += dp[j];
+        }
+    }
+
+    println!("Part 2: {}", dp.last().unwrap());
+
+
+
     Ok(())
 }
