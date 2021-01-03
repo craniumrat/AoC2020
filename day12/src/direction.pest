@@ -1,0 +1,4 @@
+dir = @{ "N" | "S" | "E" | "W" | "L" | "R" | "F" }
+value = @{ ASCII_DIGIT+ }
+
+entry = {dir ~  value}
