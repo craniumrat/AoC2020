@@ -1,0 +1,9 @@
+bitmask = @{ ("0" | "1" | "X" )+ }
+address = @{ ASCII_DIGIT+ }
+value = @{ ASCII_DIGIT+ }
+mask = { "mask" ~ "=" ~ bitmask}
+mem = { "mem[" ~ address ~ "]" ~ "=" ~ value }
+
+line = { (mem | mask) }
+
+WHITESPACE = _{" "}
