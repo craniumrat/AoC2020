@@ -1,0 +1,6 @@
+name = { ASCII_ALPHA+ }
+num = @{ ASCII_DIGIT+ }
+
+line = { name ~ ":" ~ num ~ "-" ~ num ~ "or" ~ num ~ "-" ~ num }
+
+WHITESPACE = _{ " " }
