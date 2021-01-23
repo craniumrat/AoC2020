@@ -1,0 +1,7 @@
+prim = @ { "\"" ~ ASCII_ALPHA ~ "\"" }
+number = @ { ASCII_DIGIT+ }
+sub_ors = { (number)+ }
+or = { sub_ors ~ "|" ~ sub_ors }
+and = { number+ }
+rule = { number ~ ":" ~ (or | prim | and) }
+WHITESPACE = _{ " " }
